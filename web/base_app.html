@@ -17,7 +17,39 @@
   <script type="module" src="https://esm.sh/tsx"></script>
   <!-- 可以使用 tailwindcss ，但是请尽量克制，因为难以维护可读性可检索性差 -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    /* Minimal Modern Reset */
+    /* Box sizing rules */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
 
+    /* Remove default margins and padding */
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Make images easier to work with */
+    img,
+    picture,
+    video,
+    canvas,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    /* Inherit fonts for form elements */
+    input,
+    button,
+    textarea,
+    select {
+      font: inherit;
+    }
+  </style>
   <style id="s"></style>
 </head>
 
