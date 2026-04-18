@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@19.2.4",
+        "react/jsx-runtime": "https://esm.sh/react@19.2.4/jsx-runtime",
+        "react-dom/client": "https://esm.sh/react-dom@19.2.4/client",
+        "lucide-react": "https://esm.sh/lucide-react?external=react",
+        "zustand": "https://esm.sh/zustand?external=react"
+      }
+    }
+  </script>
+
+  <script type="module" src="https://esm.sh/tsx"></script>
+  <!-- 可以使用 tailwindcss ，但是请尽量克制，因为难以维护可读性可检索性差 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style id="s"></style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    import * as React from "react";
+    window.React = React;
+  </script>
+
+  <script type="text/babel">
+    import { createRoot } from "react-dom/client"
+    import { Plus } from "lucide-react"
+    import { create } from "zustand"
+
+    /* ======================
+       🔧 极简 CSS 工具
+    ====================== */
+
+    let sheet = document.getElementById("s")
+    let i = 0
+
+    function css(obj) {
+      const cn = "c" + i++
+
+      function build(o, sel) {
+        let base = ""
+        let nested = ""
+
+        for (let k in o) {
+          const v = o[k]
+
+          if (typeof v === "object") {
+            if (k === "hover") nested += build(v, sel + ":hover")
+            else nested += build(v, sel + " " + k)
+          } else {
+            const key = k.replace(/[A-Z]/g, m => "-" + m.toLowerCase())
+            base += `${key}:${v};`
+          }
+        }
+
+        return base ? `${sel}{${base}}${nested}` : nested
+      }
+
+      sheet.innerHTML += build(obj, "." + cn)
+      return cn
+    }
+
+    /* ======================
+       🎨 variants
+    ====================== */
+
+    function createStyles(base, variants = {}) {
+      const baseClass = css(base)
+
+      return (props = {}) => {
+        let cls = [baseClass]
+
+        for (let key in props) {
+          const v = variants[key]?.[props[key]]
+          if (v) cls.push(css(v))
+        }
+
+        return cls.join(" ")
+      }
+    }
+
+    /* ======================
+       🧱 UI
+    ====================== */
+
+    const button = createStyles(
+      {
+        padding: "8px 12px",
+        borderRadius: "8px",
+        border: "none",
+        cursor: "pointer",
+        display: "flex",
+        gap: "6px",
+        alignItems: "center"
+      },
+      {
+        variant: {
+          primary: {
+            backgroundColor: "#111",
+            color: "#fff",
+            hover: { backgroundColor: "#333" }
+          },
+          ghost: {
+            backgroundColor: "transparent",
+            hover: { backgroundColor: "#eee" }
+          }
+        }
+      }
+    )
+
+    const card = css({
+      padding: "16px",
+      borderRadius: "12px",
+      backgroundColor: "#fff",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.08)"
+    })
+
+    /* ======================
+       🧠 Zustand
+    ====================== */
+
+    const useStore = create((set) => ({
+      count: 0,
+      inc: () => set((s) => ({ count: s.count + 1 }))
+    }))
+
+    /* ======================
+       🚀 App
+    ====================== */
+
+    function App() {
+      const { count, inc } = useStore()
+
+      return (
+        <div style={{ padding: 40 }}>
+          <div className={card}>
+            <h2>Count: {count}</h2>
+
+            <button
+              className={button({ variant: "primary" })}
+              onClick={inc}
+            >
+              <Plus size={16} />
+              Add
+            </button>
+          </div>
+        </div>
+      )
+    }
+
+    createRoot(document.getElementById("root")).render(<App />)
+  </script>
+</body>
+
+</html>
+
+<!--
+模板要求：
+- 注意 esm.sh/tsx 就是 babel ，不需要重复引入 babel
+- 尽量不要使用 tailwindcss ，除非很适合
+- 尽量少用 useState 使用 zustand 简化状态管理
+- 如果不要求，默认 dark theme
+-->
