@@ -13,7 +13,10 @@
       }
     }
   </script>
-  <!-- esm.sh/tsx => babel + tsx runtime -->
+  
+  <!-- 这个是用于修复 http 服务下没有 crypto 的问题，必须保持存在！不要移除！ -->
+  <script type="module" src="https://esm.sh/webcrypto-liner-shim@1.4.8"></script>
+  <!-- "esm.sh/tsx" 是 esm.sh 提供的 babel 包，不是 nodejs的tsx 包。不要给这个包写版本号！  -->
   <script type="module" src="https://esm.sh/tsx"></script>
   <style>
     /* A basic, minimal reset */
