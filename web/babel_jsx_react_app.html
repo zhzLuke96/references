@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@19.2.4",
+        "react/jsx-runtime": "https://esm.sh/react@19.2.4/jsx-runtime",
+        "react-dom/client": "https://esm.sh/react-dom@19.2.4/client",
+        "lucide-react": "https://esm.sh/lucide-react?external=react",
+        "zustand": "https://esm.sh/zustand?external=react"
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@latest/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="dark">
+  <div id="root"></div>
+
+  <script type="text/babel" data-type="module">
+    import * as React from "react";
+    window.React = React;
+  </script>
+
+  <script type="text/babel" data-type="module">
+    import { createRoot } from "react-dom/client"
+    import { Plus } from "lucide-react"
+    import { create } from "zustand"
+
+    const useStore = create((set) => ({
+      count: 0,
+      inc: () => set((s) => ({ count: s.count + 1 }))
+    }))
+
+    function App() {
+      const { count, inc } = useStore()
+
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4 antialiased transition-colors duration-300">
+          <div className="flex items-center justify-between gap-6 w-full max-w-md px-8 py-10 bg-white/90 backdrop-blur-sm dark:bg-slate-800/90 rounded-3xl shadow-2xl shadow-slate-200/60 dark:shadow-slate-900/70 border border-slate-100/80 dark:border-slate-700/80 transition-all duration-300 hover:shadow-slate-300/60 dark:hover:shadow-slate-800/60 hover:-translate-y-1">
+            <h2 className="text-3xl font-bold text-slate-700 dark:text-slate-200 tracking-tight">
+              Count: <span className="text-blue-600 dark:text-blue-400">{count}</span>
+            </h2>
+            <button
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-400 text-white rounded-2xl font-semibold shadow-lg shadow-blue-200/60 dark:shadow-blue-800/40 hover:shadow-blue-300/70 dark:hover:shadow-blue-700/50 hover:from-blue-700 hover:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-500 active:scale-95 transition-all duration-200 cursor-pointer"
+              onClick={inc}
+            >
+              <Plus size={20} className="text-white dark:text-white" />
+              Add
+            </button>
+          </div>
+        </div>
+      )
+    }
+
+    createRoot(document.getElementById("root")).render(<App />)
+  </script>
+</body>
+
+</html>
+
+<!--
+模板要求：
+- 尽量少用 useState 使用 zustand 简化状态管理
+- 尽量少用 css 优先使用 tailwindcss，为了最小化代码量
+- 如果不要求，默认 dark theme
+-->
